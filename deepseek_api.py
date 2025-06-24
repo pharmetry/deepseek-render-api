@@ -9,7 +9,7 @@ import torch
 app = FastAPI()
 
 # Lightweight model for code generation (under 512MB RAM)
-model_id = "Salesforce/codegen-350M-mono"
+model_id = "sshleifer/tiny-gpt2"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(model_id)
 model.eval()
