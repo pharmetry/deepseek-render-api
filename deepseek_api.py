@@ -1,5 +1,5 @@
 # deepseek_api.py
-# FastAPI server to run a DeepSeek-compatible model for website code generation
+# FastAPI server to run a lightweight code model for HTML/JS/CSS generation (Render-compatible)
 
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
@@ -8,24 +8,21 @@ import torch
 
 app = FastAPI()
 
-# Load the model
-model_id = "deepseek-ai/deepseek-coder-1.3b-base"  # Use this or a smaller one if needed
+# Lightweight model for code generation (under 512MB RAM)
+model_id = "Salesforce/codegen-350M-mono"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(model_id)
 model.eval()
 
-if torch.cuda.is_available():
-    model.to("cuda")
+# Use CPU only (Render Free Tier has no GPU and limited RAM)
 
 class PromptRequest(BaseModel):
     prompt: str
-    max_tokens: int = 1024
+    max_tokens: int = 512
 
 @app.post("/generate")
 async def generate(request: PromptRequest):
     inputs = tokenizer(request.prompt, return_tensors="pt")
-    if torch.cuda.is_available():
-        inputs = {k: v.to("cuda") for k, v in inputs.items()}
 
     with torch.no_grad():
         output = model.generate(
