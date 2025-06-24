@@ -1,7 +1,7 @@
 services:
   - type: web
-    name: deepseek-api
+    name: deepseek-render-api
     env: python
-    buildCommand: "pip install -r requirements.txt"
-    startCommand: "uvicorn deepseek_api:app --host 0.0.0.0 --port 10000"
     plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn deepseek_api:app --host 0.0.0.0 --port 10000
